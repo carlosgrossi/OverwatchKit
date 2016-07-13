@@ -7,13 +7,47 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E5909461D1A298400019A14 /* ParsePlayOverwach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E5909451D1A298400019A14 /* ParsePlayOverwach.swift */; };
+		0E5909521D1A2A1900019A14 /* TFHpple.h in Headers */ = {isa = PBXBuildFile; fileRef = 0E59094C1D1A2A1900019A14 /* TFHpple.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0E5909531D1A2A1900019A14 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E59094D1D1A2A1900019A14 /* TFHpple.m */; };
+		0E5909541D1A2A1900019A14 /* TFHppleElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 0E59094E1D1A2A1900019A14 /* TFHppleElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0E5909551D1A2A1900019A14 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E59094F1D1A2A1900019A14 /* TFHppleElement.m */; };
+		0E5909561D1A2A1900019A14 /* XPathQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 0E5909501D1A2A1900019A14 /* XPathQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0E5909571D1A2A1900019A14 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E5909511D1A2A1900019A14 /* XPathQuery.m */; };
+		0E59095C1D1A2D4800019A14 /* libxml2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E59095B1D1A2D4800019A14 /* libxml2.2.dylib */; };
 		0E7B89461D18943E00DC7DC4 /* OverwatchKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 0E7B89451D18943E00DC7DC4 /* OverwatchKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0E7B897B1D18968E00DC7DC4 /* ExtensionKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E7B897A1D18968300DC7DC4 /* ExtensionKit.framework */; };
+		0E7B89811D1896D900DC7DC4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E7B89801D1896D900DC7DC4 /* Constants.swift */; };
+		0E7B89831D1896F600DC7DC4 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E7B89821D1896F600DC7DC4 /* Errors.swift */; };
+		0E7B898B1D18980E00DC7DC4 /* LootboxOverwatchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E7B898A1D18980E00DC7DC4 /* LootboxOverwatchAPI.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		0E7B89791D18968300DC7DC4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0E7B89741D18968300DC7DC4 /* ExtensionKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0ED42D3C1C8A7620008B416C;
+			remoteInfo = ExtensionKit;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		0E5909451D1A298400019A14 /* ParsePlayOverwach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsePlayOverwach.swift; sourceTree = "<group>"; };
+		0E59094C1D1A2A1900019A14 /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFHpple.h; sourceTree = "<group>"; };
+		0E59094D1D1A2A1900019A14 /* TFHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFHpple.m; sourceTree = "<group>"; };
+		0E59094E1D1A2A1900019A14 /* TFHppleElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TFHppleElement.h; sourceTree = "<group>"; };
+		0E59094F1D1A2A1900019A14 /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TFHppleElement.m; sourceTree = "<group>"; };
+		0E5909501D1A2A1900019A14 /* XPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XPathQuery.h; sourceTree = "<group>"; };
+		0E5909511D1A2A1900019A14 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XPathQuery.m; sourceTree = "<group>"; };
+		0E59095B1D1A2D4800019A14 /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/lib/libxml2.2.dylib; sourceTree = DEVELOPER_DIR; };
 		0E7B89421D18943E00DC7DC4 /* OverwatchKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OverwatchKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0E7B89451D18943E00DC7DC4 /* OverwatchKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OverwatchKit.h; sourceTree = "<group>"; };
 		0E7B89471D18943E00DC7DC4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0E7B89741D18968300DC7DC4 /* ExtensionKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ExtensionKit.xcodeproj; path = ../ExtensionKit/ExtensionKit.xcodeproj; sourceTree = "<group>"; };
+		0E7B89801D1896D900DC7DC4 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		0E7B89821D1896F600DC7DC4 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		0E7B898A1D18980E00DC7DC4 /* LootboxOverwatchAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LootboxOverwatchAPI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -21,16 +55,34 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0E7B897B1D18968E00DC7DC4 /* ExtensionKit.framework in Frameworks */,
+				0E59095C1D1A2D4800019A14 /* libxml2.2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0E59094B1D1A2A1900019A14 /* TFHpple */ = {
+			isa = PBXGroup;
+			children = (
+				0E59094C1D1A2A1900019A14 /* TFHpple.h */,
+				0E59094D1D1A2A1900019A14 /* TFHpple.m */,
+				0E59094E1D1A2A1900019A14 /* TFHppleElement.h */,
+				0E59094F1D1A2A1900019A14 /* TFHppleElement.m */,
+				0E5909501D1A2A1900019A14 /* XPathQuery.h */,
+				0E5909511D1A2A1900019A14 /* XPathQuery.m */,
+			);
+			path = TFHpple;
+			sourceTree = "<group>";
+		};
 		0E7B89381D18943E00DC7DC4 = {
 			isa = PBXGroup;
 			children = (
+				0E59095B1D1A2D4800019A14 /* libxml2.2.dylib */,
+				0E7B89741D18968300DC7DC4 /* ExtensionKit.xcodeproj */,
 				0E7B89441D18943E00DC7DC4 /* OverwatchKit */,
+				0E59094B1D1A2A1900019A14 /* TFHpple */,
 				0E7B89431D18943E00DC7DC4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,10 +98,22 @@
 		0E7B89441D18943E00DC7DC4 /* OverwatchKit */ = {
 			isa = PBXGroup;
 			children = (
+				0E7B89801D1896D900DC7DC4 /* Constants.swift */,
+				0E7B89821D1896F600DC7DC4 /* Errors.swift */,
+				0E7B898A1D18980E00DC7DC4 /* LootboxOverwatchAPI.swift */,
+				0E5909451D1A298400019A14 /* ParsePlayOverwach.swift */,
 				0E7B89451D18943E00DC7DC4 /* OverwatchKit.h */,
 				0E7B89471D18943E00DC7DC4 /* Info.plist */,
 			);
 			path = OverwatchKit;
+			sourceTree = "<group>";
+		};
+		0E7B89751D18968300DC7DC4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0E7B897A1D18968300DC7DC4 /* ExtensionKit.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -59,7 +123,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0E5909521D1A2A1900019A14 /* TFHpple.h in Headers */,
+				0E5909561D1A2A1900019A14 /* XPathQuery.h in Headers */,
 				0E7B89461D18943E00DC7DC4 /* OverwatchKit.h in Headers */,
+				0E5909541D1A2A1900019A14 /* TFHppleElement.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +162,7 @@
 				TargetAttributes = {
 					0E7B89411D18943E00DC7DC4 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = K34G3U98RH;
 					};
 				};
 			};
@@ -108,12 +176,28 @@
 			mainGroup = 0E7B89381D18943E00DC7DC4;
 			productRefGroup = 0E7B89431D18943E00DC7DC4 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 0E7B89751D18968300DC7DC4 /* Products */;
+					ProjectRef = 0E7B89741D18968300DC7DC4 /* ExtensionKit.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				0E7B89411D18943E00DC7DC4 /* OverwatchKit */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		0E7B897A1D18968300DC7DC4 /* ExtensionKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ExtensionKit.framework;
+			remoteRef = 0E7B89791D18968300DC7DC4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		0E7B89401D18943E00DC7DC4 /* Resources */ = {
@@ -130,6 +214,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0E5909551D1A2A1900019A14 /* TFHppleElement.m in Sources */,
+				0E5909571D1A2A1900019A14 /* XPathQuery.m in Sources */,
+				0E5909531D1A2A1900019A14 /* TFHpple.m in Sources */,
+				0E7B89831D1896F600DC7DC4 /* Errors.swift in Sources */,
+				0E7B898B1D18980E00DC7DC4 /* LootboxOverwatchAPI.swift in Sources */,
+				0E5909461D1A298400019A14 /* ParsePlayOverwach.swift in Sources */,
+				0E7B89811D1896D900DC7DC4 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,6 +265,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -217,6 +309,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
@@ -230,29 +323,40 @@
 		0E7B894B1D18943E00DC7DC4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				HEADER_SEARCH_PATHS = $SDKROOT/usr/include/libxml2;
 				INFOPLIST_FILE = OverwatchKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_BUNDLE_IDENTIFIER = net.DayOneDigital.OverwatchKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		0E7B894C1D18943E00DC7DC4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				HEADER_SEARCH_PATHS = $SDKROOT/usr/include/libxml2;
 				INFOPLIST_FILE = OverwatchKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_BUNDLE_IDENTIFIER = net.DayOneDigital.OverwatchKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -278,6 +382,7 @@
 				0E7B894C1D18943E00DC7DC4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
