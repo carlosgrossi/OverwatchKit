@@ -35,7 +35,11 @@ public class PlayOverwatchProfile {
         NSURLSession.urlSessionDataTaskWithURL(url) { (data, response, error) in
             NSURLSession.validateURLSessionDataTask(data, response: response, error: error, completitionHandler: { (accountData, error) in
                 if (error == nil) {
-                    self.getAccountId(NSJSONSerialization.serializeDataToArray(accountData), completitionHandler: completitionHandler)
+                    if (data != nil) {
+                        self.getAccountId(NSJSONSerialization.serializeDataToArray(accountData), completitionHandler: completitionHandler)
+                    } else {
+                        completitionHandler(nil, nil, nil, NSError.errorBattleTagNotFound())
+                    }
                 } else {
                     completitionHandler(nil, nil, nil, NSError.errorGettingBattleNetID())
                 }
@@ -47,7 +51,11 @@ public class PlayOverwatchProfile {
         NSURLSession.urlSessionDataTaskWithURL(url) { (data, response, error) in
             NSURLSession.validateURLSessionDataTask(data, response: response, error: error, completitionHandler: { (data, error) in
                 if (error == nil) {
-                    self.parseProfileData(data, completitionHandler: completitionHandler)
+                    if (data.length > 0) {
+                        self.parseProfileData(data, completitionHandler: completitionHandler)
+                    } else {
+                        completitionHandler(nil, NSError.errorGettingProfileData())
+                    }
                 } else {
                     completitionHandler(nil, NSError.errorGettingProfileData())
                 }
@@ -56,12 +64,16 @@ public class PlayOverwatchProfile {
     }
     
     private func getAccountId(account:NSArray?, completitionHandler:(String?, String?, String?, NSError?)->()) {
-        guard account?.count > 0 else { completitionHandler(nil, nil, nil, NSError.errorGettingBattleNetID()); return }
+        guard account?.count > 0 else {
+            completitionHandler(nil, nil, nil, NSError.errorBattleTagNotFound()); return }
         let accountDictionary = account?.firstObject
         
-        guard let carrerLink = accountDictionary?.valueForKey("careerLink") as? String else { completitionHandler(nil, nil, nil, NSError.errorGettingBattleNetID()); return }
-        guard let displayName = accountDictionary?.valueForKey("platformDisplayName") as? String  else { completitionHandler(nil, nil, nil, NSError.errorGettingBattleNetID()); return }
-        guard let portraitImage = accountDictionary?.valueForKey("portrait") as? String   else { completitionHandler(nil, nil, nil, NSError.errorGettingBattleNetID()); return }
+        guard let carrerLink = accountDictionary?.valueForKey("careerLink") as? String else {
+            completitionHandler(nil, nil, nil, NSError.errorBattleTagNotFound()); return }
+        guard let displayName = accountDictionary?.valueForKey("platformDisplayName") as? String  else {
+            completitionHandler(nil, nil, nil, NSError.errorBattleTagNotFound()); return }
+        guard let portraitImage = accountDictionary?.valueForKey("portrait") as? String   else {
+            completitionHandler(nil, nil, nil, NSError.errorBattleTagNotFound()); return }
         
         completitionHandler(carrerLink, displayName, portraitImage, nil)
     }
@@ -73,26 +85,53 @@ public class PlayOverwatchProfile {
         profile.setValue(self.parseScreenName(profileParse), forKey: "ScreenName")
         profile.setValue(self.parseLevelBadge(profileParse), forKey: "LevelBadge")
         profile.setValue(self.parseCurrentLevel(profileParse), forKey: "Level")
+        profile.setValue(self.parseRankBadge(profileParse), forKey: "RankBadge")
+        profile.setValue(self.parseCurrentRank(profileParse), forKey: "Rank")
+        profile.setValue(self.parseMasterheadHero(profileParse), forKey: "MasterheadHero")
         
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E00000FFFFFFFF']", parseSubject: profileParse), forKey: "Overall")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000002']", parseSubject: profileParse), forKey: "Reaper")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000003']", parseSubject: profileParse), forKey: "Tracer")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000004']", parseSubject: profileParse), forKey: "Mercy")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000005']", parseSubject: profileParse), forKey: "Hanzo")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000006']", parseSubject: profileParse), forKey: "Torbjorn")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000007']", parseSubject: profileParse), forKey: "Reinhardt")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000008']", parseSubject: profileParse), forKey: "Pharah")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000009']", parseSubject: profileParse), forKey: "Winston")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000000A']", parseSubject: profileParse), forKey: "Widowmaker")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000015']", parseSubject: profileParse), forKey: "Bastion")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000040']", parseSubject: profileParse), forKey: "Roadhog")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000042']", parseSubject: profileParse), forKey: "McCree")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000065']", parseSubject: profileParse), forKey: "Junkrat")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000068']", parseSubject: profileParse), forKey: "Zarya")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000006E']", parseSubject: profileParse), forKey: "Soldier76")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000079']", parseSubject: profileParse), forKey: "Lucio")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000007A']", parseSubject: profileParse), forKey: "DVa")
-        profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E00000000000DD']", parseSubject: profileParse), forKey: "Mei")
+        if let quickPlaySection = profileParse.searchWithXPathQuery("//div[@id='quick-play']") as? [TFHppleElement] {
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E00000FFFFFFFF']", parseSubject: quickPlaySection.first), forKey: "Overall")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000002']", parseSubject: quickPlaySection.first), forKey: "Reaper")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000003']", parseSubject: quickPlaySection.first), forKey: "Tracer")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000004']", parseSubject: quickPlaySection.first), forKey: "Mercy")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000005']", parseSubject: quickPlaySection.first), forKey: "Hanzo")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000006']", parseSubject: quickPlaySection.first), forKey: "Torbjorn")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000007']", parseSubject: quickPlaySection.first), forKey: "Reinhardt")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000008']", parseSubject: quickPlaySection.first), forKey: "Pharah")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000009']", parseSubject: quickPlaySection.first), forKey: "Winston")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000000A']", parseSubject: quickPlaySection.first), forKey: "Widowmaker")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000015']", parseSubject: quickPlaySection.first), forKey: "Bastion")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000040']", parseSubject: quickPlaySection.first), forKey: "Roadhog")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000042']", parseSubject: quickPlaySection.first), forKey: "McCree")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000065']", parseSubject: quickPlaySection.first), forKey: "Junkrat")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000068']", parseSubject: quickPlaySection.first), forKey: "Zarya")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000006E']", parseSubject: quickPlaySection.first), forKey: "Soldier76")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000079']", parseSubject: quickPlaySection.first), forKey: "Lucio")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000007A']", parseSubject: quickPlaySection.first), forKey: "DVa")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E00000000000DD']", parseSubject: quickPlaySection.first), forKey: "Mei")
+        }
+
+        if let competitivePlaySection = profileParse.searchWithXPathQuery("//div[@id='competitive-play']") as? [TFHppleElement] {
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E00000FFFFFFFF']", parseSubject: competitivePlaySection.first), forKey: "cOverall")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000002']", parseSubject: competitivePlaySection.first), forKey: "cReaper")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000003']", parseSubject: competitivePlaySection.first), forKey: "cTracer")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000004']", parseSubject: competitivePlaySection.first), forKey: "cMercy")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000005']", parseSubject: competitivePlaySection.first), forKey: "cHanzo")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000006']", parseSubject: competitivePlaySection.first), forKey: "cTorbjorn")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000007']", parseSubject: competitivePlaySection.first), forKey: "cReinhardt")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000008']", parseSubject: competitivePlaySection.first), forKey: "cPharah")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000009']", parseSubject: competitivePlaySection.first), forKey: "cWinston")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000000A']", parseSubject: competitivePlaySection.first), forKey: "cWidowmaker")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000015']", parseSubject: competitivePlaySection.first), forKey: "cBastion")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000040']", parseSubject: competitivePlaySection.first), forKey: "cRoadhog")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000042']", parseSubject: competitivePlaySection.first), forKey: "cMcCree")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000065']", parseSubject: competitivePlaySection.first), forKey: "cJunkrat")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000068']", parseSubject: competitivePlaySection.first), forKey: "cZarya")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000006E']", parseSubject: competitivePlaySection.first), forKey: "cSoldier76")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000079']", parseSubject: competitivePlaySection.first), forKey: "cLucio")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000007A']", parseSubject: competitivePlaySection.first), forKey: "cDVa")
+            profile.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E00000000000DD']", parseSubject: competitivePlaySection.first), forKey: "cMei")
+        }
         
         profile.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.0']", parseSubject: profileParse), forKey: "GeneralAchievements")
         profile.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.1']", parseSubject: profileParse), forKey: "OffenseAchievements")
@@ -127,6 +166,13 @@ public class PlayOverwatchProfile {
         return nil
     }
     
+    private func parseRankBadge(parseSubject:TFHpple) -> String? {
+        if let parseElement = parseSubject.searchWithXPathQuery("//div[@class='competitive-rank']/img").first as? TFHppleElement {
+            return parseElement.attributes["src"] as? String
+        }
+        return nil
+    }
+    
     private func parseCurrentLevel(parseSubject:TFHpple) -> Int? {
         if let parseElement = parseSubject.searchWithXPathQuery("//div[@class='player-level']/div").first as? TFHppleElement {
             return Int(parseElement.content)
@@ -134,14 +180,30 @@ public class PlayOverwatchProfile {
         return nil
     }
     
-    private func parseCarrerStats(xPath:String, parseSubject:TFHpple) -> NSDictionary? {
+    private func parseCurrentRank(parseSubject:TFHpple) -> Int? {
+        if let parseElement = parseSubject.searchWithXPathQuery("//div[@class='competitive-rank']/div").first as? TFHppleElement {
+            return Int(parseElement.content)
+        }
+        return nil
+    }
+    
+    private func parseMasterheadHero(parseSubject:TFHpple) -> String? {
+        if let parseElement = parseSubject.searchWithXPathQuery("//div[starts-with(@class,'masthead-hero-image')]").first as? TFHppleElement {
+            guard let masterheadHero = parseElement.attributes["class"] as? String else { return nil }
+            return masterheadHero.lastWord
+        }
+        return nil
+    }
+    
+    private func parseCarrerStats(xPath:String, parseSubject:TFHppleElement?) -> NSDictionary? {
+        guard let parseSubject = parseSubject else { return nil }
         if let overallStats = self.parseStatsForPath(xPath, parseSubject: parseSubject) {
             return NSDictionary(dictionary: overallStats)
         }
         return nil
     }
     
-    private func parseStatsForPath(XPathQuery:String, parseSubject:TFHpple) -> [String:AnyObject]? {
+    private func parseStatsForPath(XPathQuery:String, parseSubject:TFHppleElement) -> [String:AnyObject]? {
         guard let parseElements = parseSubject.searchWithXPathQuery(XPathQuery) as? [TFHppleElement] else { return nil }
         
         for parseElement in parseElements {
@@ -308,5 +370,23 @@ extension String {
  extension Dictionary where Value : Equatable {
     func allKeysForValue(val : Value) -> [Key] {
         return self.filter { $1 == val }.map { $0.0 }
+    }
+ }
+ 
+ 
+ extension String {
+    var byWords: [String] {
+        var result:[String] = []
+        enumerateSubstringsInRange(characters.indices, options: .ByWords) {
+            guard let substring = $0.substring else { return }
+            result.append(substring)
+        }
+        return result
+    }
+    var lastWord: String {
+        return byWords.last ?? ""
+    }
+    func lastWords(maxWords: Int) -> [String] {
+        return Array(byWords.suffix(maxWords))
     }
  }
