@@ -17,7 +17,7 @@ extension NSError {
         @nonobjc static let errorGettingProfileData:Int = 1003
         @nonobjc static let errorBattleTagNotFound:Int = 1004
         
-        static let errorGettingBattleNetIDDescr = "Unable to get information from the the BattleNet informed, maybe the battle net servers is offline, please try again in a few moments"
+        static let errorGettingBattleNetIDDescr = "Unable to get information from the the BattleNet, maybe the battle net servers is offline, please try again in a few moments"
         static let battleTagNotFoundDescr = "Battle Tag not found, please check your Battle Tag and try loading again."
     }
     
