@@ -9,34 +9,34 @@
 import Foundation
 import ExtensionKit
 
-public class PlayOverwatchProfile {
+open class PlayOverwatchProfile {
     
-    static public let defaultProfile = PlayOverwatchProfile()
+    static open let defaultProfile = PlayOverwatchProfile()
     
-    public func getAccountByName(accountName:String, completitionHandler:(userInfo:[[String:String?]]?, NSError?)->()) {
-        guard let url = PlayOverwatchAccountByNameURL(accountName) else { completitionHandler(userInfo:nil, NSError.noURLFound()); return }
+    open func getAccountByName(_ accountName:String, completitionHandler:@escaping (_ userInfo:[[String:String?]]?, NSError?)->()) {
+        guard let url = PlayOverwatchAccountByNameURL(accountName) else { completitionHandler(nil, NSError.noURLFound()); return }
         self.getAccountByName(url, completitionHandler: completitionHandler)
     }
     
-    public func getProfile(language:String = "en-us", carrerLink:String, completitionHandler:(NSDictionary?, NSError?)->()) {
+    open func getProfile(_ language:String = "en-us", carrerLink:String, completitionHandler:@escaping (NSDictionary?, NSError?)->()) {
         guard let url = PlayOverwatchProfileURL(language, carrerLink: carrerLink) else { completitionHandler(nil, NSError.noURLFound()); return }
         self.getProfileData(url, completitionHandler: completitionHandler)
     }
     
     // MARK: - Private Methods
-    private func PlayOverwatchAccountByNameURL(accountName:String) -> NSURL? {
-        return NSURL(string: PlayOverwatchParseConstants.AccountByNameURL, args: [accountName])
+    fileprivate func PlayOverwatchAccountByNameURL(_ accountName:String) -> URL? {
+        return URL(string: PlayOverwatchParseConstants.AccountByNameURL, args: [accountName])
     }
-    private func PlayOverwatchProfileURL(language:String, carrerLink:String) -> NSURL? {
-        return NSURL(string: PlayOverwatchParseConstants.ProfileStatsURL, args: [language, carrerLink])
+    fileprivate func PlayOverwatchProfileURL(_ language:String, carrerLink:String) -> URL? {
+        return URL(string: PlayOverwatchParseConstants.ProfileStatsURL, args: [language, carrerLink])
     }
     
-    private func getAccountByName(url:NSURL, completitionHandler:([[String:String?]]?, NSError?)->()) {
-        NSURLSession.urlSessionDataTaskWithURL(url) { (data, response, error) in
-            NSURLSession.validateURLSessionDataTask(data, response: response, error: error, completitionHandler: { (accountData, error) in
+    fileprivate func getAccountByName(_ url:URL, completitionHandler:@escaping ([[String:String?]]?, NSError?)->()) {
+        URLSession.urlSessionDataTaskWithURL(url) { (data, response, error) in
+            URLSession.validateURLSessionDataTask(data, response: response, error: error as NSError?, completitionHandler: { (accountData, error) in
                 if (error == nil) {
                     if (data != nil) {
-                        self.getAccountId(NSJSONSerialization.serializeDataToArray(accountData), completitionHandler: completitionHandler)
+                        self.getAccountId(JSONSerialization.serializeDataToArray(accountData), completitionHandler: completitionHandler)
                     } else {
                         completitionHandler(nil, NSError.errorBattleTagNotFound())
                     }
@@ -47,11 +47,11 @@ public class PlayOverwatchProfile {
         }
     }
     
-    private func getProfileData(url:NSURL, completitionHandler:(NSDictionary?, NSError?)->()) {
-        NSURLSession.urlSessionDataTaskWithURL(url) { (data, response, error) in
-            NSURLSession.validateURLSessionDataTask(data, response: response, error: error, completitionHandler: { (data, error) in
+    fileprivate func getProfileData(_ url:URL, completitionHandler:@escaping (NSDictionary?, NSError?)->()) {
+        URLSession.urlSessionDataTaskWithURL(url) { (data, response, error) in
+            URLSession.validateURLSessionDataTask(data, response: response, error: error as NSError?, completitionHandler: { (data, error) in
                 if (error == nil) {
-                    if (data.length > 0) {
+                    if (data.count > 0) {
                         self.parseProfileData(data, completitionHandler: completitionHandler)
                     } else {
                         completitionHandler(nil, NSError.errorGettingProfileData())
@@ -63,15 +63,15 @@ public class PlayOverwatchProfile {
         }
     }
     
-    private func getAccountId(account:NSArray?, completitionHandler:([[String:String?]]?, NSError?)->()) {
+    fileprivate func getAccountId(_ account:NSArray?, completitionHandler:([[String:String?]]?, NSError?)->()) {
         guard let account = account else { completitionHandler(nil, NSError.errorBattleTagNotFound()); return }
         guard account.count > 0 else { completitionHandler(nil, NSError.errorBattleTagNotFound()); return }
         
         var profiles:[[String:String?]] = []
         for accountDictionary in account {
-            guard let carrerLink = accountDictionary.valueForKey("careerLink") as? String else { completitionHandler(nil, NSError.errorBattleTagNotFound()); return }
-            guard let displayName = accountDictionary.valueForKey("platformDisplayName") as? String  else { completitionHandler(nil, NSError.errorBattleTagNotFound()); return }
-            guard let portraitImage = accountDictionary.valueForKey("portrait") as? String   else { completitionHandler(nil, NSError.errorBattleTagNotFound()); return }
+            guard let carrerLink = (accountDictionary as AnyObject).value(forKey: "careerLink") as? String else { completitionHandler(nil, NSError.errorBattleTagNotFound()); return }
+            guard let displayName = (accountDictionary as AnyObject).value(forKey: "platformDisplayName") as? String  else { completitionHandler(nil, NSError.errorBattleTagNotFound()); return }
+            guard let portraitImage = (accountDictionary as AnyObject).value(forKey: "portrait") as? String   else { completitionHandler(nil, NSError.errorBattleTagNotFound()); return }
             
             var plataform:String?
             var region:String = ""
@@ -82,7 +82,7 @@ public class PlayOverwatchProfile {
                 var length = occurencesOfSlash[2].location - occurencesOfSlash[1].location - 1
                 
                 if (length <= carrerLink.characters.count - location) {
-                    plataform = (carrerLink as NSString).substringWithRange(NSRange(location: location, length: length))
+                    plataform = (carrerLink as NSString).substring(with: NSRange(location: location, length: length))
                 }
                 
                 if occurencesOfSlash.count > 3 {
@@ -90,7 +90,7 @@ public class PlayOverwatchProfile {
                     length = occurencesOfSlash[3].location - occurencesOfSlash[2].location - 1
                     
                     if (length <= carrerLink.characters.count - location) {
-                        region = (carrerLink as NSString).substringWithRange(NSRange(location: location, length: length))
+                        region = (carrerLink as NSString).substring(with: NSRange(location: location, length: length))
                     }
                 }
                 
@@ -109,20 +109,20 @@ public class PlayOverwatchProfile {
         completitionHandler(profiles, nil)
     }
     
-    private func parseProfileData(profileData:NSData, completitionHandler:(NSDictionary?, NSError?)->()) {
-        let profileParse = TFHpple(HTMLData: profileData)
+    fileprivate func parseProfileData(_ profileData:Data, completitionHandler:(NSDictionary?, NSError?)->()) {
+        let profileParse = TFHpple(htmlData: profileData)
         let profile = NSMutableDictionary()
         
-        profile.setValue(self.parseScreenName(profileParse), forKey: "ScreenName")
-        profile.setValue(self.parseLevelBadge(profileParse), forKey: "LevelBadge")
-        profile.setValue(self.parseLevelRank(profileParse), forKey: "LevelRank")
-        profile.setValue(self.parseCurrentLevel(profileParse), forKey: "Level")
-        profile.setValue(self.parseRankBadge(profileParse), forKey: "RankBadge")
-        profile.setValue(self.parseCurrentRank(profileParse), forKey: "Rank")
-        profile.setValue(self.parseMasterheadHero(profileParse), forKey: "MasterheadHero")
+        profile.setValue(self.parseScreenName(profileParse!), forKey: "ScreenName")
+        profile.setValue(self.parseLevelBadge(profileParse!), forKey: "LevelBadge")
+        profile.setValue(self.parseLevelRank(profileParse!), forKey: "LevelRank")
+        profile.setValue(self.parseCurrentLevel(profileParse!), forKey: "Level")
+        profile.setValue(self.parseRankBadge(profileParse!), forKey: "RankBadge")
+        profile.setValue(self.parseCurrentRank(profileParse!), forKey: "Rank")
+        profile.setValue(self.parseMasterheadHero(profileParse!), forKey: "MasterheadHero")
         
         let quickPlay = NSMutableDictionary()
-        if let quickPlaySection = profileParse.searchWithXPathQuery("//div[@id='quickplay']") as? [TFHppleElement] {
+        if let quickPlaySection = profileParse?.search(withXPathQuery: "//div[@id='quickplay']") as? [TFHppleElement] {
             quickPlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E00000FFFFFFFF']", parseSubject: quickPlaySection.first), forKey: "Overall")
             quickPlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000002']", parseSubject: quickPlaySection.first), forKey: "Reaper")
             quickPlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000003']", parseSubject: quickPlaySection.first), forKey: "Tracer")
@@ -149,7 +149,7 @@ public class PlayOverwatchProfile {
         }
         
         let competitivePlay = NSMutableDictionary()
-        if let competitivePlaySection = profileParse.searchWithXPathQuery("//div[@id='competitive']") as? [TFHppleElement] {
+        if let competitivePlaySection = profileParse?.search(withXPathQuery: "//div[@id='competitive']") as? [TFHppleElement] {
             competitivePlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E00000FFFFFFFF']", parseSubject: competitivePlaySection.first), forKey: "Overall")
             competitivePlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000002']", parseSubject: competitivePlaySection.first), forKey: "Reaper")
             competitivePlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000003']", parseSubject: competitivePlaySection.first), forKey: "Tracer")
@@ -179,34 +179,34 @@ public class PlayOverwatchProfile {
         profile.setValue(competitivePlay, forKey: "CompetitivePlay")
         
         let achievements = NSMutableDictionary()
-        achievements.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.0']", parseSubject: profileParse), forKey: "General")
-        achievements.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.1']", parseSubject: profileParse), forKey: "Offense")
-        achievements.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.2']", parseSubject: profileParse), forKey: "Defense")
-        achievements.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.3']", parseSubject: profileParse), forKey: "Tank")
-        achievements.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.4']", parseSubject: profileParse), forKey: "Support")
-        achievements.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.5']", parseSubject: profileParse), forKey: "Maps")
+        achievements.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.0']", parseSubject: profileParse!), forKey: "General")
+        achievements.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.1']", parseSubject: profileParse!), forKey: "Offense")
+        achievements.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.2']", parseSubject: profileParse!), forKey: "Defense")
+        achievements.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.3']", parseSubject: profileParse!), forKey: "Tank")
+        achievements.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.4']", parseSubject: profileParse!), forKey: "Support")
+        achievements.setValue(self.parseAchievements("//div[@data-category-id='overwatch.achievementCategory.5']", parseSubject: profileParse!), forKey: "Maps")
         
         profile.setValue(achievements, forKey: "Achievements")
         
         completitionHandler(profile, nil)
     }
     
-    private func parseScreenName(parseSubject:TFHpple) -> String? {
-        if let parseElement = parseSubject.searchWithXPathQuery("//h1[@class='header-masthead']").first as? TFHppleElement {
+    fileprivate func parseScreenName(_ parseSubject:TFHpple) -> String? {
+        if let parseElement = parseSubject.search(withXPathQuery: "//h1[@class='header-masthead']").first as? TFHppleElement {
             return parseElement.content
         }
         return nil
     }
     
-    private func parseLevelBadge(parseSubject:TFHpple) -> String? {
-        if let parseElement = parseSubject.searchWithXPathQuery("//div[@class='player-level']").first as? TFHppleElement {
+    fileprivate func parseLevelBadge(_ parseSubject:TFHpple) -> String? {
+        if let parseElement = parseSubject.search(withXPathQuery: "//div[@class='player-level']").first as? TFHppleElement {
             if let elementAttribute = parseElement.attributes.first?.1 as? String {
                 do {
-                    let urlDetector = try NSDataDetector(types: NSTextCheckingType.Link.rawValue)
-                    let matches = urlDetector.matchesInString(elementAttribute, options: [], range: NSRange(location: 0, length: elementAttribute.utf8.count))
+                    let urlDetector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+                    let matches = urlDetector.matches(in: elementAttribute, options: [], range: NSRange(location: 0, length: elementAttribute.utf8.count))
                     
                     for match in matches {
-                        return (elementAttribute as NSString).substringWithRange(match.range)
+                        return (elementAttribute as NSString).substring(with: match.range)
                     }
                 } catch _ { }
             }
@@ -214,15 +214,15 @@ public class PlayOverwatchProfile {
         return nil
     }
     
-    private func parseLevelRank(parseSubject:TFHpple) -> String? {
-        if let parseElement = parseSubject.searchWithXPathQuery("//div[@class='player-rank']").first as? TFHppleElement {
+    fileprivate func parseLevelRank(_ parseSubject:TFHpple) -> String? {
+        if let parseElement = parseSubject.search(withXPathQuery: "//div[@class='player-rank']").first as? TFHppleElement {
             if let elementAttribute = parseElement.attributes.first?.1 as? String {
                 do {
-                    let urlDetector = try NSDataDetector(types: NSTextCheckingType.Link.rawValue)
-                    let matches = urlDetector.matchesInString(elementAttribute, options: [], range: NSRange(location: 0, length: elementAttribute.utf8.count))
+                    let urlDetector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+                    let matches = urlDetector.matches(in: elementAttribute, options: [], range: NSRange(location: 0, length: elementAttribute.utf8.count))
                     
                     for match in matches {
-                        return (elementAttribute as NSString).substringWithRange(match.range)
+                        return (elementAttribute as NSString).substring(with: match.range)
                     }
                 } catch _ { }
             }
@@ -230,37 +230,37 @@ public class PlayOverwatchProfile {
         return nil
     }
     
-    private func parseRankBadge(parseSubject:TFHpple) -> String? {
-        if let parseElement = parseSubject.searchWithXPathQuery("//div[@class='competitive-rank']/img").first as? TFHppleElement {
+    fileprivate func parseRankBadge(_ parseSubject:TFHpple) -> String? {
+        if let parseElement = parseSubject.search(withXPathQuery: "//div[@class='competitive-rank']/img").first as? TFHppleElement {
             return parseElement.attributes["src"] as? String
         }
         return nil
     }
     
-    private func parseCurrentLevel(parseSubject:TFHpple) -> Int? {
-        if let parseElement = parseSubject.searchWithXPathQuery("//div[@class='player-level']/div").first as? TFHppleElement {
+    fileprivate func parseCurrentLevel(_ parseSubject:TFHpple) -> Int? {
+        if let parseElement = parseSubject.search(withXPathQuery: "//div[@class='player-level']/div").first as? TFHppleElement {
             return Int(parseElement.content)
         }
         return nil
     }
     
-    private func parseCurrentRank(parseSubject:TFHpple) -> Int? {
-        if let parseElement = parseSubject.searchWithXPathQuery("//div[@class='competitive-rank']/div").first as? TFHppleElement {
+    fileprivate func parseCurrentRank(_ parseSubject:TFHpple) -> Int? {
+        if let parseElement = parseSubject.search(withXPathQuery: "//div[@class='competitive-rank']/div").first as? TFHppleElement {
             return Int(parseElement.content)
         }
         return nil
     }
     
-    private func parseMasterheadHero(parseSubject:TFHpple) -> String? {
+    fileprivate func parseMasterheadHero(_ parseSubject:TFHpple) -> String? {
         //if let parseElement = parseSubject.searchWithXPathQuery("//div[starts-with(@class,'masthead-hero-image')]").first as? TFHppleElement {
-        if let parseElement = parseSubject.searchWithXPathQuery("//div[starts-with(@data-js,'heroMastheadImage')]").first as? TFHppleElement {
+        if let parseElement = parseSubject.search(withXPathQuery: "//div[starts-with(@data-js,'heroMastheadImage')]").first as? TFHppleElement {
             guard let masterheadHero = parseElement.attributes["data-hero-quickplay"] as? String else { return nil }
             return masterheadHero.lastWord
         }
         return nil
     }
     
-    private func parseCarrerStats(xPath:String, parseSubject:TFHppleElement?) -> NSDictionary? {
+    fileprivate func parseCarrerStats(_ xPath:String, parseSubject:TFHppleElement?) -> NSDictionary? {
         guard let parseSubject = parseSubject else { return nil }
         if let overallStats = self.parseStatsForPath(xPath, parseSubject: parseSubject) {
             return NSDictionary(dictionary: overallStats)
@@ -268,8 +268,8 @@ public class PlayOverwatchProfile {
         return nil
     }
     
-    private func parseStatsForPath(XPathQuery:String, parseSubject:TFHppleElement) -> [String:AnyObject]? {
-        guard let parseElements = parseSubject.searchWithXPathQuery(XPathQuery) as? [TFHppleElement] else { return nil }
+    fileprivate func parseStatsForPath(_ XPathQuery:String, parseSubject:TFHppleElement) -> [String:AnyObject]? {
+        guard let parseElements = parseSubject.search(withXPathQuery: XPathQuery) as? [TFHppleElement] else { return nil }
         
         for parseElement in parseElements {
             guard let parseElementChildren = parseElement.children as? [TFHppleElement] else { continue }
@@ -279,7 +279,7 @@ public class PlayOverwatchProfile {
         return nil
     }
     
-    private func parseStatsChildren(children:[TFHppleElement]) -> [String:AnyObject]? {
+    fileprivate func parseStatsChildren(_ children:[TFHppleElement]) -> [String:AnyObject]? {
         var carrerStats:[String:AnyObject] = [:]
         for child in children {
             if !child.isTextNode() {
@@ -300,13 +300,13 @@ public class PlayOverwatchProfile {
                     let parentNode = nodeParent.parent
                     var stats:[String:String] = [:]
                     
-                    for tableNode in parentNode.children {
+                    for tableNode in (parentNode?.children)! {
                         guard tableNode is TFHppleElement else { continue }
                         
-                        if tableNode.tagName == "tbody" {
-                            for trNode in tableNode.children {
+                        if (tableNode as AnyObject).tagName == "tbody" {
+                            for trNode in (tableNode as AnyObject).children {
                                 guard trNode is TFHppleElement else { continue }
-                                guard trNode.tagName == "tr" else { continue }
+                                guard (trNode as AnyObject).tagName == "tr" else { continue }
                                 
                                 
                                 var key:String = ""
@@ -314,17 +314,17 @@ public class PlayOverwatchProfile {
                                 
                                 
                                 var tdIndex:Int = 0
-                                for tdNode in trNode.children {
+                                for tdNode in (trNode as AnyObject).children {
                                     
-                                    switch tdIndex % (trNode.children!).count {
+                                    switch tdIndex % ((trNode as AnyObject).children!).count {
                                     case 0:
                                         guard tdNode is TFHppleElement else { break }
-                                        guard tdNode.content != nil else { break }
-                                        key = String(tdNode.content)
+                                        guard (tdNode as AnyObject).content != nil else { break }
+                                        key = String((tdNode as AnyObject).content)
                                     case 1:
                                         guard tdNode is TFHppleElement else { break }
-                                        guard tdNode.content != nil else { break }
-                                        value = String(tdNode.content)
+                                        guard (tdNode as AnyObject).content != nil else { break }
+                                        value = String((tdNode as AnyObject).content)
                                     default: break
                                     }
                                     tdIndex += 1
@@ -333,15 +333,15 @@ public class PlayOverwatchProfile {
                             }
                         }
                     }
-                    return [child.content:stats]
+                    return [child.content:stats as AnyObject]
                 }
             }
         }
         return carrerStats
     }
     
-    private func parseAchievements(XPathQuery:String, parseSubject:TFHpple) -> NSArray? {
-        guard let parseElements = parseSubject.searchWithXPathQuery(XPathQuery) as? [TFHppleElement] else { return nil }
+    fileprivate func parseAchievements(_ XPathQuery:String, parseSubject:TFHpple) -> NSArray? {
+        guard let parseElements = parseSubject.search(withXPathQuery: XPathQuery) as? [TFHppleElement] else { return nil }
         
         for parseElement in parseElements {
             guard let parseElementChildren = parseElement.children as? [TFHppleElement] else { continue }
@@ -351,7 +351,7 @@ public class PlayOverwatchProfile {
         return nil
     }
     
-    private func parseAchievementsChildren(children:[TFHppleElement]) -> NSArray? {
+    fileprivate func parseAchievementsChildren(_ children:[TFHppleElement]) -> NSArray? {
         let achievements = NSMutableArray()
         for child in children {
             if !child.isTextNode() {
@@ -361,7 +361,7 @@ public class PlayOverwatchProfile {
                 return parsedChildren
             } else {
                 guard var nodeParent = child.parent else { return nil }
-                while (( nodeParent.attributes["class"]?.containsString("column")) == false ) {
+                while (( (nodeParent.attributes["class"] as AnyObject).contains("column")) == false ) {
                     guard nodeParent.parent != nil else { break }
                     nodeParent = nodeParent.parent
                 }
@@ -371,14 +371,14 @@ public class PlayOverwatchProfile {
                 let ulNode = nodeParent.parent
                 
                 
-                for child in ulNode.children {
-                    guard let ulNodeChildren = child.children as? [TFHppleElement] else { return nil }
+                for child in (ulNode?.children)! {
+                    guard let ulNodeChildren = (child as AnyObject).children as? [TFHppleElement] else { return nil }
                     let achievement = NSMutableDictionary()
                     achievement.setValue(self.parseAchievementsImage(ulNodeChildren), forKey: "achievementImage")
                     achievement.setValue(self.parseAchievementName(ulNodeChildren), forKey: "achievementName")
                     achievement.setValue(self.parseAchievementDesctiption(ulNodeChildren), forKey: "achievementDescription")
                     achievement.setValue(self.parseAchievementUnlocked(ulNodeChildren), forKey: "achievementUnlocked")
-                    achievements.addObject(achievement)
+                    achievements.add(achievement)
                 }
 
                 
@@ -389,16 +389,16 @@ public class PlayOverwatchProfile {
         return achievements
     }
     
-    private func parseAchievementUnlocked(children:[TFHppleElement]) -> Bool {
+    fileprivate func parseAchievementUnlocked(_ children:[TFHppleElement]) -> Bool {
         for child in children {
-            if child.attributes.filter({ ($0.1 as! NSString).containsString("m-disabled") }).count > 0 {
+            if child.attributes.filter({ ($0.1 as! NSString).contains("m-disabled") }).count > 0 {
                 return false
             }
         }
         return true
     }
     
-    private func parseAchievementsImage(children:[TFHppleElement]) -> String? {
+    fileprivate func parseAchievementsImage(_ children:[TFHppleElement]) -> String? {
         for child in children {
             if child.tagName != "img" {
                 guard child.children.count > 0 else { continue }
@@ -410,7 +410,7 @@ public class PlayOverwatchProfile {
         return nil
     }
     
-    private func parseAchievementName(children:[TFHppleElement]) -> String? {
+    fileprivate func parseAchievementName(_ children:[TFHppleElement]) -> String? {
         for child in children {
             if !child.isTextNode() {
                 guard child.children.count > 0 else { continue }
@@ -422,14 +422,14 @@ public class PlayOverwatchProfile {
         return nil
     }
     
-    private func parseAchievementDesctiption(children:[TFHppleElement]) -> String? {
+    fileprivate func parseAchievementDesctiption(_ children:[TFHppleElement]) -> String? {
         for child in children {
             if child.tagName != "p" {
                 guard child.children.count > 0 else { continue }
                 guard let description = self.parseAchievementDesctiption(child.children as! [TFHppleElement]) else { continue }
                 return description
             } else {
-                return child.children.first?.content
+                return (child.children.first as AnyObject).content
             }
         }
         return nil
@@ -439,12 +439,12 @@ public class PlayOverwatchProfile {
  
 extension String {
     mutating func removeComma() {
-        self = self.stringByReplacingOccurrencesOfString(",", withString: "")
+        self = self.replacingOccurrences(of: ",", with: "")
     }
  }
  
  extension Dictionary where Value : Equatable {
-    func allKeysForValue(val : Value) -> [Key] {
+    func allKeysForValue(_ val : Value) -> [Key] {
         return self.filter { $1 == val }.map { $0.0 }
     }
  }
@@ -453,16 +453,19 @@ extension String {
  extension String {
     var byWords: [String] {
         var result:[String] = []
-        enumerateSubstringsInRange(characters.indices, options: .ByWords) {
-            guard let substring = $0.substring else { return }
-            result.append(substring)
+        let range = characters.startIndex ..< characters.endIndex
+        
+        enumerateSubstrings(in: range, options: .byWords) {w,_,_,_ in
+            guard let word = w else {return}
+            result.append(word)
         }
+        
         return result
     }
     var lastWord: String {
         return byWords.last ?? ""
     }
-    func lastWords(maxWords: Int) -> [String] {
+    func lastWords(_ maxWords: Int) -> [String] {
         return Array(byWords.suffix(maxWords))
     }
  }
