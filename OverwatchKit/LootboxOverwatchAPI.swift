@@ -13,43 +13,43 @@ open class LootboxOverwatchAPI {
     
     static open let standardAPI = LootboxOverwatchAPI()
     
-    open func getPatchNotes(_ completitionHandler:(NSArray?, NSError?)->()) {
+    open func getPatchNotes(_ completitionHandler:@escaping (NSArray?, NSError?)->()) {
         guard let url = patchNotesURL() else { completitionHandler(nil, NSError.noURLFound()); return }
-        //self.getInfo(url, completitionHandler: completitionHandler)
+        self.getInfo(url: url, completitionHandler: completitionHandler)
     }
     
-    open func getProfileStats(_ plataform:String, region:String, tag:String, completitionHandler:(NSDictionary?, NSError?)->()) {
+    open func getProfileStats(_ plataform:String, region:String, tag:String, completitionHandler:@escaping (NSDictionary?, NSError?)->()) {
         guard let url = profileStatsURL(plataform, region: region, tag: tag) else { completitionHandler(nil, NSError.noURLFound()); return }
-        //self.getInfo(url, completitionHandler: completitionHandler)
+        self.getInfo(url: url, completitionHandler: completitionHandler)
     }
     
-    open func getAchievements(_ plataform:String, region:String, tag:String, completitionHandler:(NSDictionary?, NSError?)->()) {
+    open func getAchievements(_ plataform:String, region:String, tag:String, completitionHandler:@escaping (NSDictionary?, NSError?)->()) {
         guard let url = achievementsURL(plataform, region: region, tag: tag) else { completitionHandler(nil, NSError.noURLFound()); return }
-        //self.getInfo(url, completitionHandler: completitionHandler)
+        self.getInfo(url: url, completitionHandler: completitionHandler)
     }
     
-    open func getHeroesStats(_ plataform:String, region:String, tag:String, completitionHandler:(NSDictionary?, NSError?)->()) {
+    open func getHeroesStats(_ plataform:String, region:String, tag:String, completitionHandler:@escaping (NSDictionary?, NSError?)->()) {
         guard let url = heroesStatsURL(plataform, region: region, tag: tag) else { completitionHandler(nil, NSError.noURLFound()); return }
-        //self.getInfo(url, completitionHandler: completitionHandler)
+        self.getInfo(url: url, completitionHandler: completitionHandler)
     }
     
-    open func getHeroStats(_ plataform:String, region:String, tag:String, hero:String, completitionHandler:(NSDictionary?, NSError?)->()) {
+    open func getHeroStats(_ plataform:String, region:String, tag:String, hero:String, completitionHandler:@escaping (NSDictionary?, NSError?)->()) {
         guard let url = heroStatsURL(plataform, region: region, tag: tag, hero: hero) else { completitionHandler(nil, NSError.noURLFound()); return }
-        //self.getInfo(url, completitionHandler: completitionHandler)
+        self.getInfo(url: url, completitionHandler: completitionHandler)
     }
     
-    open func getOverallHeroesStats(_ plataform:String, region:String, tag:String, completitionHandler:(NSArray?, NSError?)->()) {
+    open func getOverallHeroesStats(_ plataform:String, region:String, tag:String, completitionHandler:@escaping (NSArray?, NSError?)->()) {
         guard let url = overallHeroesStatsURL(plataform, region: region, tag: tag) else { completitionHandler(nil, NSError.noURLFound()); return }
-        //self.getInfo(url, completitionHandler: completitionHandler)
+        self.getInfo(url: url, completitionHandler: completitionHandler)
     }
     
-    open func getPlataforms(_ plataform:String, region:String, tag:String, completitionHandler:(NSDictionary?, NSError?)->()) {
+    open func getPlataforms(_ plataform:String, region:String, tag:String, completitionHandler:@escaping (NSDictionary?, NSError?)->()) {
         guard let url = plataformsURL(plataform, region: region, tag: tag) else { completitionHandler(nil, NSError.noURLFound()); return }
-        //self.getInfo(url, completitionHandler: completitionHandler)
+        self.getInfo(url: url, completitionHandler: completitionHandler)
     }
     
     // MARK: - Private Methods
-    fileprivate func getInfo(_ url:URL, completitionHandler:@escaping (NSDictionary?, NSError?)->()) {
+    fileprivate func getInfo(url:URL, completitionHandler:@escaping (NSDictionary?, NSError?)->()) {
         URLSession.urlSessionDataTaskWithURL(url) { (data, response, error) in
             URLSession.validateURLSessionDataTask(data, response: response, error: error as NSError?, completitionHandler: { (data, error) in
                 if (error == nil) {
@@ -61,7 +61,7 @@ open class LootboxOverwatchAPI {
         }
     }
     
-    fileprivate func getInfo(_ url:URL, completitionHandler:@escaping (NSArray?, NSError?)->()) {
+    fileprivate func getInfo(url:URL, completitionHandler:@escaping (NSArray?, NSError?)->()) {
         URLSession.urlSessionDataTaskWithURL(url) { (data, response, error) in
             URLSession.validateURLSessionDataTask(data, response: response, error: error as NSError?, completitionHandler: { (data, error) in
                 if (error == nil) {
