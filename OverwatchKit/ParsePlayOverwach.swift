@@ -32,11 +32,11 @@ open class PlayOverwatchProfile {
     }
     
     fileprivate func getAccountByName(_ url:URL, completitionHandler:@escaping ([[String:String?]]?, NSError?)->()) {
-        URLSession.urlSessionDataTaskWithURL(url) { (data, response, error) in
+		URLSession.dataTask(with: url) { (data, response, error) in
             URLSession.validateURLSessionDataTask(data, response: response, error: error as NSError?, completitionHandler: { (accountData, error) in
                 if (error == nil) {
                     if (data != nil) {
-                        self.getAccountId(JSONSerialization.serializeDataToArray(accountData), completitionHandler: completitionHandler)
+                        self.getAccountId(JSONSerialization.jsonObject(with: accountData), completitionHandler: completitionHandler)
                     } else {
                         completitionHandler(nil, NSError.errorBattleTagNotFound())
                     }
@@ -48,7 +48,7 @@ open class PlayOverwatchProfile {
     }
     
     fileprivate func getProfileData(_ url:URL, completitionHandler:@escaping (NSDictionary?, NSError?)->()) {
-        URLSession.urlSessionDataTaskWithURL(url) { (data, response, error) in
+        URLSession.dataTask(with: url) { (data, response, error) in
             URLSession.validateURLSessionDataTask(data, response: response, error: error as NSError?, completitionHandler: { (data, error) in
                 if (error == nil) {
                     if (data.count > 0) {
@@ -76,7 +76,7 @@ open class PlayOverwatchProfile {
             var plataform:String?
             var region:String = ""
             
-            let occurencesOfSlash = carrerLink.rangesOfSubstring("/")
+            let occurencesOfSlash = carrerLink.rangesOf(substring: "/")
             if occurencesOfSlash.count > 0 {
                 var location = occurencesOfSlash[1].location + 1
                 var length = occurencesOfSlash[2].location - occurencesOfSlash[1].location - 1
@@ -146,6 +146,8 @@ open class PlayOverwatchProfile {
             quickPlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000016']", parseSubject: quickPlaySection.first), forKey: "Symmetra")
             quickPlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000013B']", parseSubject: quickPlaySection.first), forKey: "Ana")
             quickPlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000020']", parseSubject: quickPlaySection.first), forKey: "Zenyatta")
+            quickPlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000013E']", parseSubject: quickPlaySection.first), forKey: "Orisa")
+            quickPlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000012E']", parseSubject: quickPlaySection.first), forKey: "Sombra")
         }
         
         let competitivePlay = NSMutableDictionary()
@@ -173,6 +175,8 @@ open class PlayOverwatchProfile {
             competitivePlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000016']", parseSubject: competitivePlaySection.first), forKey: "Symmetra")
             competitivePlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000013B']", parseSubject: competitivePlaySection.first), forKey: "Ana")
             competitivePlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E0000000000020']", parseSubject: competitivePlaySection.first), forKey: "Zenyatta")
+            competitivePlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000013E']", parseSubject: competitivePlaySection.first), forKey: "Orisa")
+            competitivePlay.setValue(self.parseCarrerStats("//div[@data-category-id='0x02E000000000012E']", parseSubject: competitivePlaySection.first), forKey: "Sombra")
         }
         
         profile.setValue(quickPlay, forKey: "QuickPlay")
@@ -192,7 +196,7 @@ open class PlayOverwatchProfile {
     }
     
     fileprivate func parseScreenName(_ parseSubject:TFHpple) -> String? {
-        if let parseElement = parseSubject.search(withXPathQuery: "//h1[@class='header-masthead']").first as? TFHppleElement {
+        if let parseElement = parseSubject.search(withXPathQuery: "//h1[@class='h2 header-masthead']").first as? TFHppleElement {
             return parseElement.content
         }
         return nil
@@ -304,7 +308,7 @@ open class PlayOverwatchProfile {
                         guard tableNode is TFHppleElement else { continue }
                         
                         if (tableNode as AnyObject).tagName == "tbody" {
-                            for trNode in (tableNode as AnyObject).children {
+                            for trNode in (tableNode as! TFHppleElement).children {
                                 guard trNode is TFHppleElement else { continue }
                                 guard (trNode as AnyObject).tagName == "tr" else { continue }
                                 
@@ -314,17 +318,17 @@ open class PlayOverwatchProfile {
                                 
                                 
                                 var tdIndex:Int = 0
-                                for tdNode in (trNode as AnyObject).children {
+                                for tdNode in (trNode as! TFHppleElement).children {
                                     
                                     switch tdIndex % ((trNode as AnyObject).children!).count {
                                     case 0:
                                         guard tdNode is TFHppleElement else { break }
                                         guard (tdNode as AnyObject).content != nil else { break }
-                                        key = String((tdNode as AnyObject).content)
+                                        key = String((tdNode as! TFHppleElement).content)
                                     case 1:
                                         guard tdNode is TFHppleElement else { break }
                                         guard (tdNode as AnyObject).content != nil else { break }
-                                        value = String((tdNode as AnyObject).content)
+                                        value = String((tdNode as! TFHppleElement).content)
                                     default: break
                                     }
                                     tdIndex += 1
@@ -438,7 +442,7 @@ open class PlayOverwatchProfile {
  
  
 extension String {
-    mutating func removeComma() {
+    public mutating func removeComma() {
         self = self.replacingOccurrences(of: ",", with: "")
     }
  }
