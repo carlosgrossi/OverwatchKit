@@ -90,7 +90,7 @@ open class PlayOverwatchProfile {
                     length = occurencesOfSlash[3].location - occurencesOfSlash[2].location - 1
                     
                     if (length <= carrerLink.characters.count - location) {
-                        region = (carrerLink as NSString).substring(with: NSRange(location: location, length: length))
+                        region = (carrerLink as NSString).substring(with: NSRange(location: location, length: length)) // FIX: /carrer/pc/Grossi-1404 (URL não possui mais a região)
                     }
                 }
                 
@@ -196,7 +196,7 @@ open class PlayOverwatchProfile {
     }
     
     fileprivate func parseScreenName(_ parseSubject:TFHpple) -> String? {
-        if let parseElement = parseSubject.search(withXPathQuery: "//h1[@class='h2 header-masthead']").first as? TFHppleElement {
+        if let parseElement = parseSubject.search(withXPathQuery: "//h1[@class='header-masthead']").first as? TFHppleElement {
             return parseElement.content
         }
         return nil
